@@ -27,23 +27,12 @@ TRUNCATE TABLE customer
 
 insert into customer values(300,'Jaydeep','Bengalore',100,101);
 insert into customer values(301,'Bhargav','Mysore',100,101);
-insert into customer values(305,'Ramya','Bengalore',300,104);
-insert into customer values(308,'Raghu','Dharavad',400,104);
-insert into customer values(309,'Rajesh','Hubli',200,108);
-insert into customer values(312,'Ravi','Mangalore',500,106);
-insert into customer values(456,'Rajdeep','Belagavi',300,110);
+insert into customer values(305,'Ramya','Mumbai',300,104);
+insert into customer values(308,'Raghu','Mumbai',400,104);
+insert into customer values(309,'Rajesh','Noida',200,108);
+insert into customer values(312,'Ravi','Kanpur',500,106);
+insert into customer values(456,'Rajdeep','Mysore',300,110);
 
-UPDATE customer SET city = 'Noida' WHERE
-salesman_id = 108
-
-UPDATE customer SET city = 'Kanpur' WHERE
-salesman_id = 106
-
-UPDATE customer SET city = 'Mysore' WHERE
-salesman_id = 110
-
-UPDATE customer SET city = 'Kanpur' WHERE
-salesman_id = 104
 
 create table orders
 (ord_no int primary key,
