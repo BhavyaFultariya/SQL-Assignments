@@ -5,6 +5,69 @@ be triggered before every Update and Insert command in the Orders controller,and
 will use the stored procedure to verify that the Freight does not exceed the average
 freight. If it does, a message will be displayed and the command will be cancelled.*/
 
+-- Create Procedure to Calculate Freight Average
+
+CREATE PROCEDURE spCalAvgFreight
+    @CustomerID NVARCHAR(5),
+    @AverageFreight MONEY OUTPUT
+AS
+BEGIN
+   SELECT @AverageFreight = AVG(Freight) 
+   FROM Orders
+   WHERE CustomerID = @CustomerID
+END
+GO
+
+
+-- Create Trigger for Verifing Freight before Insert
+CREATE TRIGGER tr_VerifyFreightForInsert
+ON Orders
+INSTEAD OF INSERT
+AS
+BEGIN
+	DECLARE @AvgFreightOfOrders MONEY
+	DECLARE @CustID NVARCHAR(5)
+	DECLARE @Freight MONEY
+	SELECT @CustId=CustomerID FROM inserted
+	SELECT @Freight=Freight FROM inserted
+	-- execute stored procedure
+	EXECUTE spCalAvgFreight @CustID,
+		@AverageFreight = @AvgFreightOfOrders OUTPUT
+	-- check the freight
+		IF @AvgFreightOfOrders IS NOT NULL 
+			AND @AvgFreightOfOrders < @Freight 
+		BEGIN
+			Raiserror('Invalid data as Freight value exceeds the average freight value',16,1)
+			RETURN
+		END
+END
+
+INSERT INTO Orders VALUES('VINET',null,null,null,null,null,23,null,null,null,null,null,null)
+
+-- Create Trigger for Verifing Freight before Update
+CREATE TRIGGER tr_VerifyFreightForUpdate
+ON Orders
+INSTEAD OF UPDATE
+AS
+BEGIN
+	DECLARE @AvgFreightOfOrders MONEY
+	DECLARE @CustID NVARCHAR(5)
+	DECLARE @Freight MONEY
+	SELECT @CustId=CustomerID FROM inserted
+	SELECT @Freight=Freight FROM inserted
+	-- execute stored procedure
+	EXECUTE spCalAvgFreight @CustID,
+		@AverageFreight = @AvgFreightOfOrders OUTPUT
+	-- check the freight
+		IF @AvgFreightOfOrders IS NOT NULL
+			AND @AvgFreightOfOrders < @Freight 
+		BEGIN
+			Raiserror('Invalid data as Freight value exceeds the average freight value',16,1)
+			RETURN
+		END
+END
+
+UPDATE Orders SET Freight=9 WHERE CustomerID='VINET'
 
 /*Query-2:
 Write a SQL query to Create Stored procedure in the Northwind database to retrieve
