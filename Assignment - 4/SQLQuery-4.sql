@@ -18,7 +18,7 @@ BEGIN
 END
 GO
 
-
+[dbo].[spEmployeeSalesByCategory]
 -- Create Trigger for Verifing Freight before Insert
 CREATE TRIGGER tr_VerifyFreightForInsert
 ON Orders
